@@ -1,9 +1,9 @@
 //cut -f 1,3 -d : < /etc/passwd | sed 's+^\(.*\):\(.*\)+\2:\1+' | sort -n > users
+//not working :(
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-
 
 int main()
 {
@@ -21,17 +21,19 @@ int main()
             dup2(tube2[0],0);
             close(tube2[0]);
             dup2(1, dest);
-            execlp("sort","sort","-n",NULL);
             close(dest);
 
-        }else{
-            close(tube2[0]);
-            dup2(tube2[1],1);
-            close(tube2[1]);
+            execlp("sort","sort","-n",NULL);
 
+        }else{
             close(tube[1]);
             dup2(tube[0],0);
             close(tube[0]);
+            
+            close(tube2[0]);
+            dup2(tube2[1],1);
+            close(tube2[1]);
+            
             execlp("sed","sed","s+^\\(.*\\):\\(.*\\)+\\2:\\1+",NULL);
             }
     } else {
@@ -40,9 +42,9 @@ int main()
         close(file);
 
         close(tube[0]);
-        dup2(tube[1],1);
+        dup2(1,tube[1]);
         close(tube[1]);
-        execlp("cut", "cut", "-f", "1,3", "-d", ":", "/etc/passwd", NULL);
+        execlp("cut", "cut", "-f", "1,3", "-d", ":", NULL);
     }
     return 0;
 }

@@ -1,3 +1,4 @@
+//wc < /etc/passwd
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
